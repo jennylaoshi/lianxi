@@ -23,18 +23,19 @@
     #result {
       margin-top: 15px;
       font-weight: bold;
+      min-height: 24px;
     }
   </style>
 </head>
 <body>
 
-<h2 id="question-title">Вопрос 1</h2>
+<h2 id="question-title"></h2>
 
 <audio id="audio" controls></audio>
 
 <input type="text" id="answer" placeholder="Введите ответ">
 
-<button onclick="checkAnswer()">Проверить</button>
+<button id="checkBtn">Проверить</button>
 
 <div id="result"></div>
 
@@ -49,50 +50,59 @@ const questions = [
 let current = 0;
 
 const audioEl = document.getElementById("audio");
-const resultEl = document.getElementById("result");
 const answerEl = document.getElementById("answer");
+const resultEl = document.getElementById("result");
 const titleEl = document.getElementById("question-title");
+const buttonEl = document.getElementById("checkBtn");
 
 function normalize(str) {
   return str
-    .normalize("NFKC")      // нормализация Unicode
-    .replace(/\s+/g, "")   // убираем все пробелы
+    .normalize("NFKC")
+    .replace(/\s+/g, "")
     .trim();
 }
 
 function loadQuestion() {
+  titleEl.textContent = "Вопрос " + (current + 1);
   audioEl.src = questions[current].audio;
+  audioEl.load();          // КРИТИЧНО для GitHub Pages
   answerEl.value = "";
   resultEl.textContent = "";
-  titleEl.textContent = "Вопрос " + (current + 1);
 }
 
-function checkAnswer() {
+buttonEl.addEventListener("click", () => {
   const userAnswer = normalize(answerEl.value);
   const correctAnswer = normalize(questions[current].answer);
+
+  if (!userAnswer) {
+    resultEl.textContent = "Введите ответ";
+    resultEl.style.color = "orange";
+    return;
+  }
 
   if (userAnswer === correctAnswer) {
     resultEl.textContent = "Верно";
     resultEl.style.color = "green";
+
+    setTimeout(() => {
+      current++;
+      if (current < questions.length) {
+        loadQuestion();
+      } else {
+        titleEl.textContent = "Готово";
+        audioEl.style.display = "none";
+        answerEl.style.display = "none";
+        buttonEl.style.display = "none";
+        resultEl.textContent = "Все вопросы выполнены";
+        resultEl.style.color = "black";
+      }
+    }, 800);
+
   } else {
     resultEl.textContent = "Неверно";
     resultEl.style.color = "red";
-    return;
   }
-
-  setTimeout(() => {
-    current++;
-    if (current < questions.length) {
-      loadQuestion();
-    } else {
-      titleEl.textContent = "Готово";
-      audioEl.style.display = "none";
-      answerEl.style.display = "none";
-      resultEl.textContent = "Все вопросы выполнены";
-      resultEl.style.color = "black";
-    }
-  }, 800);
-}
+});
 
 loadQuestion();
 </script>

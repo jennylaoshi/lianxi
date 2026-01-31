@@ -1,69 +1,103 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Аудио-викторина</title>
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 10px;
-      font-size: 16px;
-    }
-    button {
-      margin-top: 10px;
-      padding: 8px 16px;
-      font-size: 16px;
-    }
-    #result {
-      margin-top: 15px;
-      font-weight: bold;
-      min-height: 24px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Аудио-викторина</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 40px auto;
+}
+input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  font-size: 16px;
+}
+button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 16px;
+}
+#result {
+  margin-top: 15px;
+  font-weight: bold;
+  min-height: 24px;
+}
+</style>
 </head>
 <body>
 
-<h2 id="question-title"></h2>
-
+<h2 id="question-title">Вопрос 1</h2>
 <audio id="audio" controls></audio>
-
 <input type="text" id="answer" placeholder="Введите ответ">
-
 <button onclick="checkAnswer()">Проверить</button>
-
 <div id="result"></div>
 
 <script>
-const questions = [
-  { audio: "q1.mp3", answer: "七点半" },
-  { audio: "q2.mp3", answer: "九点四十五分" },
-  { audio: "q3.mp3", answer: "八点四十分" },
-  { audio: "q4.mp3", answer: "十二点一刻" }
+var questions = [
+  {audio:"q1.mp3", answer:"七点半"},
+  {audio:"q2.mp3", answer:"九点四十五分"},
+  {audio:"q3.mp3", answer:"八点四十分"},
+  {audio:"q4.mp3", answer:"十二点一刻"}
 ];
 
-let current = 0;
+var current = 0;
+var audioEl = document.getElementById("audio");
+var answerEl = document.getElementById("answer");
+var resultEl = document.getElementById("result");
+var titleEl = document.getElementById("question-title");
 
-const audioEl = document.getElementById("audio");
-const answerEl = document.getElementById("answer");
-const resultEl = document.getElementById("result");
-const titleEl = document.getElementById("question-title");
-
-function normalize(str) {
-  return str
-    .normalize("NFKC")
-    .replace(/\s+/g, "")
-    .trim();
+// Нормализация Unicode и удаление пробелов
+function normalize(str){
+  return str.normalize("NFKC").replace(/\s+/g,"").trim();
 }
 
-function loadQuestion() {
-  titleEl.textContent = "Вопрос " + (
+// Загрузка текущего вопроса
+function loadQuestion(){
+  titleEl.textContent = "Вопрос " + (current+1);
+  audioEl.src = questions[current].audio;
+  audioEl.load();
+  answerEl.value = "";
+  resultEl.textContent = "";
+}
+
+// Проверка ответа
+function checkAnswer(){
+  var user = normalize(answerEl.value);
+  var correct = normalize(questions[current].answer);
+
+  if(user===""){
+    resultEl.textContent="Введите ответ";
+    resultEl.style.color="orange";
+    return;
+  }
+
+  if(user===correct){
+    resultEl.textContent="Верно";
+    resultEl.style.color="green";
+    setTimeout(function(){
+      current++;
+      if(current<questions.length){
+        loadQuestion();
+      }else{
+        titleEl.textContent="Готово";
+        audioEl.style.display="none";
+        answerEl.style.display="none";
+        resultEl.textContent="Все вопросы выполнены";
+        resultEl.style.color="black";
+      }
+    }, 800);
+  }else{
+    resultEl.textContent="Неверно";
+    resultEl.style.color="red";
+  }
+}
+
+// старт
+loadQuestion();
+</script>
+
+</body>
+</html>

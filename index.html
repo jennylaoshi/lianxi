@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Аудио-викторина</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 40px;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      border-radius: 8px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+    }
+    .result {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <audio controls>
+    <source src="audio.mp3" type="audio/mpeg">
+    Ваш браузер не поддерживает аудио.
+  </audio>
+
+  <input type="text" id="answer" placeholder="Введите ответ">
+
+  <button onclick="checkAnswer()">Проверить</button>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+  function checkAnswer() {
+    const correctAnswer = "我七点半起床"; // ← ЗДЕСЬ правильный ответ
+    const userAnswer = document.getElementById("answer").value.trim();
+
+    const result = document.getElementById("result");
+
+    if (userAnswer === correctAnswer) {
+      result.textContent = "✅ Верно!";
+      result.style.color = "green";
+    } else {
+      result.textContent = "❌ Неверно";
+      result.style.color = "red";
+    }
+  }
+</script>
+
+</body>
+</html>
+

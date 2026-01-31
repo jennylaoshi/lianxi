@@ -38,7 +38,7 @@
 
 <div class="box">
   <audio controls>
-    <source src="audio.mp3" type="audio/mpeg">
+    <source src="q1.mp3" type="audio/mpeg">
     Ваш браузер не поддерживает аудио.
   </audio>
 
@@ -50,19 +50,18 @@
 </div>
 
 <script>
-  function checkAnswer() {
-    const correctAnswer = "我七点半起床"; // ← ЗДЕСЬ правильный ответ
-    const userAnswer = document.getElementById("answer").value.trim();
+ function checkAnswer() {
+  const userAnswer = normalize(answerEl.value);
+  const correctAnswer = normalize(questions[current].answer);
 
-    const result = document.getElementById("result");
-
-    if (userAnswer === correctAnswer) {
-      result.textContent = "✅ Верно!";
-      result.style.color = "green";
-    } else {
-      result.textContent = "❌ Неверно";
-      result.style.color = "red";
-    }
+  if (userAnswer === correctAnswer) {
+    resultEl.textContent = "Верно";
+    resultEl.style.color = "green";
+  } else {
+    resultEl.textContent = "Неверно";
+    resultEl.style.color = "red";
+    return;
+  }
   }
 </script>
 
